@@ -120,7 +120,7 @@ const CANDIDATES: Candidate[] = [
   // 2. Sharp and short, but only one real detail: the printer. A single
   // detail cannot outrank a line that stacks three of them.
   {
-    text: "My printer only jams on page one of one, which is technically impressive.",
+    text: "My printer only jams on page one of one, which it treats as a personal best.",
   },
   // 3. A reply-all joke. The turn lands well, but "reply-all" is one of
   // the most-told office gags on the internet, and it costs freshness.
@@ -145,12 +145,12 @@ const CANDIDATES: Candidate[] = [
   // 7. Two details (plants, meetings) and a clean turn, but the joke is a
   // gentle observation rather than a laugh that lands with a snap.
   {
-    text: "The office plants are thriving because nobody has scheduled a meeting with them yet.",
+    text: "The office plants are thriving because nobody has booked them into a meeting yet.",
   },
   // 8. A good turn (billing facilities for the hinges), but it opens on
   // "my door is always open", a management cliché, and its tail is long.
   {
-    text: "My boss said her door is always open, so I removed it and billed facilities for the hinges.",
+    text: "My boss said her door is always open, so I took it off its hinges and billed facilities for the removal.",
   },
   // 9. The canonical predictable gag. No real detail, no turn, no joke —
   // just a slogan about Mondays. It exists so the scorer has a floor.
@@ -249,7 +249,11 @@ const DETAIL_CATEGORIES: DetailCategory[] = [
   },
   {
     name: "email",
-    patterns: [/\bemail\b/i, /\breply-all\b/i, /\binbox\b/i],
+    // "reply-all" also shows up inflected — "replied-all",
+    // "replying-all" — and each of those is the same email detail, not
+    // generic talk about work. Without the inflection the reply-all joke
+    // in the roster scored zero details and failed criterion 1 outright.
+    patterns: [/\bemail\b/i, /\breply\w*-all\b/i, /\binbox\b/i],
   },
   {
     name: "printer",
@@ -465,7 +469,10 @@ const CLICHES: Cliche[] = [
     note: "the meeting-about-meetings premise is long past fresh",
   },
   {
-    pattern: /reply-all/i,
+    // Same inflection as the detail above: the dock has to catch
+    // "replied-all" and "replying-all" too, or the most-told gag in the
+    // roster escapes the freshness dock entirely.
+    pattern: /reply\w*-all/i,
     dock: 1,
     note: "reply-all gags are among the most-told office jokes",
   },
